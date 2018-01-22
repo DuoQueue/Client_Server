@@ -10,13 +10,14 @@ namespace Client
     {
         /// <summary>
         /// Der Haupteinstiegspunkt für die Anwendung.
+        /// Port:15567
         /// </summary>
         [STAThread]
         static void Main()
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+            Application.Run(new Client());
         }
     }
 }
