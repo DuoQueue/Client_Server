@@ -36,6 +36,9 @@
     <Reference Include="MaterialSkin">
       <HintPath>..\packages\MaterialSkin.Net4.1.0.0\lib\net40\MaterialSkin.dll</HintPath>
     </Reference>
+    <Reference Include="NetDLL">
+      <HintPath>..\..\NetDLL\NetDLL\bin\Debug\NetDLL.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />

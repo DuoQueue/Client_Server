@@ -34,6 +34,7 @@
             this.friendListBox = new System.Windows.Forms.ListBox();
             this.nameTextBox = new System.Windows.Forms.TextBox();
             this.loginButton = new System.Windows.Forms.Button();
+            this.ipAdressTextBox = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // messageRichTextBox
@@ -60,38 +61,50 @@
             this.sendButton.Name = "sendButton";
             this.sendButton.Size = new System.Drawing.Size(118, 51);
             this.sendButton.TabIndex = 2;
-            this.sendButton.Text = "Send";
+            this.sendButton.Text = "Senden";
             this.sendButton.UseVisualStyleBackColor = true;
+            this.sendButton.Click += new System.EventHandler(this.sendButton_Click);
             // 
             // friendListBox
             // 
             this.friendListBox.FormattingEnabled = true;
-            this.friendListBox.Location = new System.Drawing.Point(482, 137);
+            this.friendListBox.Location = new System.Drawing.Point(482, 163);
             this.friendListBox.Name = "friendListBox";
-            this.friendListBox.Size = new System.Drawing.Size(120, 316);
+            this.friendListBox.Size = new System.Drawing.Size(120, 290);
             this.friendListBox.TabIndex = 3;
             // 
             // nameTextBox
             // 
-            this.nameTextBox.Location = new System.Drawing.Point(482, 80);
+            this.nameTextBox.Location = new System.Drawing.Point(482, 106);
             this.nameTextBox.Name = "nameTextBox";
             this.nameTextBox.Size = new System.Drawing.Size(118, 20);
             this.nameTextBox.TabIndex = 4;
+            this.nameTextBox.Text = "Insert name here";
             // 
             // loginButton
             // 
-            this.loginButton.Location = new System.Drawing.Point(482, 106);
+            this.loginButton.Location = new System.Drawing.Point(482, 132);
             this.loginButton.Name = "loginButton";
             this.loginButton.Size = new System.Drawing.Size(118, 23);
             this.loginButton.TabIndex = 5;
             this.loginButton.Text = "Login";
             this.loginButton.UseVisualStyleBackColor = true;
+            this.loginButton.Click += new System.EventHandler(this.loginButton_Click);
+            // 
+            // ipAdressTextBox
+            // 
+            this.ipAdressTextBox.Location = new System.Drawing.Point(482, 80);
+            this.ipAdressTextBox.Name = "ipAdressTextBox";
+            this.ipAdressTextBox.Size = new System.Drawing.Size(118, 20);
+            this.ipAdressTextBox.TabIndex = 6;
+            this.ipAdressTextBox.Text = "Insert IP Adress here";
             // 
             // Client
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(612, 522);
+            this.Controls.Add(this.ipAdressTextBox);
             this.Controls.Add(this.loginButton);
             this.Controls.Add(this.nameTextBox);
             this.Controls.Add(this.friendListBox);
@@ -113,6 +126,7 @@
         private System.Windows.Forms.ListBox friendListBox;
         private System.Windows.Forms.TextBox nameTextBox;
         private System.Windows.Forms.Button loginButton;
+        private System.Windows.Forms.TextBox ipAdressTextBox;
 
 
     }
