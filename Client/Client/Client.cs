@@ -17,43 +17,63 @@ namespace Client
 {
     public partial class Client : MaterialForm
     {
-        private Client client;
-        private bool logged;
+        public string Name { get; set; }
+        public string Password { get; set; }
+        private IPEndPoint myEndPoint;
+        private Socket mySocket;
+        private int port;
+        private IPAddress myIp;
 
         public Client()
         {
-            TcpClient clients = new TcpClient();
-            logged = false;
-            try
-            {
-                IPAddress address;
-            }
-            catch
-            {
-
-            }
+            port = 15567;
+            mySocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             InitializeComponent();
         }
 
         private void loginButton_Click(object sender, EventArgs e)
         {
-            if(string.IsNullOrEmpty(nameTextBox.Text))
+            if (string.IsNullOrEmpty(ipAdressTextBox.Text)|| string.IsNullOrEmpty(nameTextBox.Text))
             {
-                MessageBox.Show("Please enter a name!");
-                return;
+                MessageBox.Show("Bitte IP Adresse oder Name einfügen!","Fehler",
+                    MessageBoxButtons.OK,MessageBoxIcon.Error);
             }
-            logged = true;
+            Name = nameTextBox.Text;
+            ConnectToServer();
         }
+        private void ConnectToServer()
+        {
+            try
+            {
+                mySocket.Connect(new IPEndPoint(IPAddress.Parse(ipAdressTextBox.Text), 15567));
 
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Verbindung fehlgeschlagen.");
+                Close();
+            }
+            if (mySocket.Connected)
+            {
+                MessageBox.Show("Erfolgreich verbunden.");
+                mySocket.Close();
+            }
+        }
         private void sendButton_Click(object sender, EventArgs e)
         {
-            if(!logged)
-            {
-                MessageBox.Show("You have to log in!", "Error!",
-                   MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
+
         }
+
+        private void ipAdressTextBox_Click(object sender, EventArgs e)
+        {
+            ipAdressTextBox.Text = string.Empty;
+        }
+
+        private void nameTextBox_Click(object sender, EventArgs e)
+        {
+            nameTextBox.Text = string.Empty;
+        }
+
 
     }
 }
