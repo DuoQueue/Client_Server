@@ -18,6 +18,7 @@ namespace Server
         private IPEndPoint endPoint;
         private Thread waitingForUsers;
         private List<HandleClient> clients;
+        private string[] names;
 
         public ServerManager()
         {
@@ -29,7 +30,7 @@ namespace Server
             }
             address = addresses.Last();
             instance = this;
-            endPoint = new IPEndPoint(address, 15567);
+            endPoint = new IPEndPoint(IPAddress.Loopback, 15567);
             server = new TcpListener(endPoint);
             clients = new List<HandleClient>();
             waitingForUsers = new Thread(x => {
@@ -37,7 +38,9 @@ namespace Server
                     TcpClient client = server.AcceptTcpClient();
                     if (client != null && clients.Count != 10)
                     {
-                        clients.Add(new HandleClient(client));
+                        HandleClient handle = new HandleClient(client);
+                        clients.Add(handle);
+                        handle.Write(new PacketConnected());
                     }
                 }
             });
@@ -96,6 +99,15 @@ namespace Server
                     if (IsNameExisting(_packet.Name))
                     {
                         client.Write(new PacketSendNameExists(true));
+                        for (int i = 0; i < clients.Count; i++)
+                        {
+                            names[i] = clients[i].Name;
+                        }
+                        PacketSendCurrentNames sendCurrentNames = new PacketSendCurrentNames(names);
+                        clients.ForEach(y =>
+                        {
+                            y.Write(sendCurrentNames);
+                        });
                     }
                     else
                     {

@@ -40,8 +40,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Packet.cs" />
+    <Compile Include="PacketConnected.cs" />
     <Compile Include="PacketDisconnect.cs" />
     <Compile Include="PacketNameRequest.cs" />
+    <Compile Include="PacketSendCurrentNames.cs" />
     <Compile Include="PacketSendNameExists.cs" />
     <Compile Include="PacketSendText.cs" />
     <Compile Include="PacketSendUniText.cs" />
