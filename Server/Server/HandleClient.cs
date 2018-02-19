@@ -6,6 +6,7 @@ using System.Threading;
 using System.Net;
 using System.Net.Sockets;
 using System.IO;
+using NetDLL;
 
 namespace Server
 {
@@ -14,7 +15,7 @@ namespace Server
         public TcpClient Handle { get; private set; }
         public StreamReader In { get; private set; }
         public StreamWriter Out { get; private set; }
-        public string Name { get; private set; }
+        public string Name { get; set; }
         public Thread Thread { get; private set; }
 
         public HandleClient(TcpClient handle)
@@ -31,7 +32,7 @@ namespace Server
                         string s = null;
                         while ((s = In.ReadLine()) != null)
                         {
-                            
+                            ServerManager.Instance().HandleInput(this, s);
                         }
                     }
                 }
@@ -45,11 +46,18 @@ namespace Server
             Thread.Start();
         }
 
-        private void Close()
+        public void Close()
         {
             Thread.Abort();
             In.Close();
             Out.Close();
+        }
+
+        public void Write(Packet packet)
+        {
+            string str = packet.ToString();
+            Out.WriteLine(str);
+            Out.Flush();
         }
     }
 }
