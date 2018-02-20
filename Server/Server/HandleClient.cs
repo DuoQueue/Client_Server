@@ -18,7 +18,6 @@ namespace Server
         public string Name { get; set; }
         public Thread Thread { get; private set; }
         public Guid ID { get; set; }
-        public int Port { get; private set; }
 
         public HandleClient(TcpClient handle)
         {
@@ -46,12 +45,6 @@ namespace Server
             });
             Thread.IsBackground = true;
             Thread.Start();
-        }
-
-        public void ChangePort(int port)
-        {
-            Port = port;
-            
         }
 
         public void Close()

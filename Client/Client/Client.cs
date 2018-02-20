@@ -45,6 +45,7 @@ namespace Client
             }
             Name = nameTextBox.Text;
             ConnectToServer();
+            reading.Start();
         }
 
         private void Read()
@@ -71,6 +72,10 @@ namespace Client
                             else if (packet is PacketConnected)
                             {
                                 Write(new PacketNameRequest(nameTextBox.Text));
+                            }
+                            else if (packet is PacketSendText)
+                            {
+                                messageRichTextBox.Text += ((PacketSendText)packet).Text;
                             }
                         }
                     }
@@ -105,7 +110,7 @@ namespace Client
         {
             if (writeMessageRichTextBox.Text != "")
             {
-                Write(new PacketSendUniText((string)friendListBox.SelectedItem, writeMessageRichTextBox.Text));
+                Write(new PacketSendUniText(nameTextBox.Text, writeMessageRichTextBox.Text));
             }
         }
 

@@ -35,6 +35,7 @@ namespace Server
                     TcpClient client = server.AcceptTcpClient();
                     if (client != null && clients.Count != 10)
                     {
+                        Console.WriteLine(" >> User connected");
                         HandleClient handle = new HandleClient(client);
                         clients.Add(handle);
                         handle.Write(new PacketConnected());
@@ -91,7 +92,7 @@ namespace Server
                     client.Close();
                     OnDisconnect(client);
                 }
-                else if (packet is PacketSendNameExists)
+                else if (packet is PacketNameRequest)
                 {
                     Console.WriteLine(" >> Name check requested");
                     PacketNameRequest _packet = (PacketNameRequest)packet;
@@ -113,10 +114,6 @@ namespace Server
                         client.Name = _packet.Name;
                         client.Write(new PacketSendNameExists(false));
                     }
-                }
-                else if (packet is PacketSendPort)
-                {
-                    client.ChangePort(((PacketSendPort)packet).Port);
                 }
             }
         }
