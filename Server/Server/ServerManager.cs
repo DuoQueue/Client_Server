@@ -16,18 +16,12 @@ namespace Server
         private TcpListener server;
         private Thread waitingForUsers;
         private List<HandleClient> clients;
-        private string[] names;
+        private PacketCurrentNames currentUserNames;
 
         public ServerManager()
         {
-            /*List<IPAddress> addresses = new List<IPAddress>();
-            var host = Dns.GetHostEntry(Dns.GetHostName());
-            foreach (var ip in host.AddressList)
-            {
-                addresses.Add(ip);
-            }
-            address = addresses.Last();*/
             instance = this;
+            currentUserNames = new PacketCurrentNames();
             server = new TcpListener(new IPEndPoint(IPAddress.Loopback, 15567));
             clients = new List<HandleClient>();
             waitingForUsers = new Thread(x => {
@@ -52,7 +46,7 @@ namespace Server
         public void Start()
         {
             Console.WriteLine();
-            Console.WriteLine(" >> Server gestartet");
+            Console.WriteLine(" >> Server started");
             server.Start();
             waitingForUsers.Start();
             Console.ReadKey();
@@ -98,15 +92,13 @@ namespace Server
                     PacketNameRequest _packet = (PacketNameRequest)packet;
                     if (IsNameExisting(_packet.Name))
                     {
+                        Console.WriteLine(" >> Username accepted");
                         client.Write(new PacketSendNameExists(true));
-                        for (int i = 0; i < clients.Count; i++)
+                        currentUserNames.AddUser(client.Name);
+                        clients.ForEach(x =>
                         {
-                            names[i] = clients[i].Name;
-                        }
-                        PacketCurrentNames sendCurrentNames = new PacketCurrentNames(names);
-                        clients.ForEach(y =>
-                        {
-                            y.Write(sendCurrentNames);
+                            Console.WriteLine(" >> Current Users sent");
+                            x.Write(currentUserNames);
                         });
                     }
                     else
@@ -132,15 +124,14 @@ namespace Server
 
         private bool IsNameExisting(string name)
         {
-            try
+            foreach (HandleClient h in clients)
             {
-                HandleClient client = clients.Find(x => x.Name.ToLower() == name.ToLower());
-                return client != null;
+                if (h.Name.ToLower() == name.ToLower())
+                {
+                    return true;
+                }
             }
-            catch
-            {
-                return false;
-            }
+            return false;
         }
     }
 }

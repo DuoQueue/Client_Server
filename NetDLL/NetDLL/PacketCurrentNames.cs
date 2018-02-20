@@ -11,9 +11,14 @@ namespace NetDLL
     {
         public List<string> Names { get; private set; }
 
-        public PacketCurrentNames(string[] names)
+        public void AddUser(string name)
         {
-            Names = names.ToList();
+            Names.Add(name);
+        }
+
+        public void RemoveUser(string name)
+        {
+            Names.Remove(name);
         }
     }
 }

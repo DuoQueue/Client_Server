@@ -75,7 +75,14 @@ namespace Client
                             }
                             else if (packet is PacketSendText)
                             {
-                                messageRichTextBox.Text += ((PacketSendText)packet).Text;
+                                if (Name == ((PacketSendText)packet).Sender)
+                                {
+                                    messageRichTextBox.Text += "Du: " + ((PacketSendText)packet).Text + "\n\n";
+                                }
+                                else
+                                {
+                                    messageRichTextBox.Text += ((PacketSendText)packet).Sender + ": " + ((PacketSendText)packet).Text + "\n\n";
+                                }
                             }
                         }
                     }
