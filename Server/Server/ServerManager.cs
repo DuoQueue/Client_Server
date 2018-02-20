@@ -7,8 +7,6 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using NetDLL;
-using System.IO;
-using System.Reflection;
 
 namespace Server
 {
@@ -20,35 +18,29 @@ namespace Server
         private IPEndPoint endPoint;
         private Thread waitingForUsers;
         private List<HandleClient> clients;
-        private Dictionary<PacketSendText, string> lastMessages;
+        private string[] names;
 
         public ServerManager()
         {
             List<IPAddress> addresses = new List<IPAddress>();
             var host = Dns.GetHostEntry(Dns.GetHostName());
-            File.Create(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\data.txt");
             foreach (var ip in host.AddressList)
             {
                 addresses.Add(ip);
             }
             address = addresses.Last();
             instance = this;
-            endPoint = new IPEndPoint(address, 15567);
+            endPoint = new IPEndPoint(IPAddress.Loopback, 15567);
             server = new TcpListener(endPoint);
-            lastMessages = new Dictionary<PacketSendText, string>();
             clients = new List<HandleClient>();
             waitingForUsers = new Thread(x => {
                 while(true){
                     TcpClient client = server.AcceptTcpClient();
                     if (client != null && clients.Count != 10)
                     {
-                        clients.Add(new HandleClient(client));
-                        Console.WriteLine(" >> Client verbunden");
-                    }
-                    else if(client != null)
-                    {
-                        client.Close();
-                        Console.WriteLine(" >> Client abgelehnt");
+                        HandleClient handle = new HandleClient(client);
+                        clients.Add(handle);
+                        handle.Write(new PacketConnected());
                     }
                 }
             });
@@ -90,8 +82,6 @@ namespace Server
                     if (receiver != null)
                     {
                         PacketSendText sendText = new PacketSendText(client.Name, sendUniText.Text);
-                        lastMessages.Add(sendText, sendUniText.Receiver);
-                        File.WriteAllText(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\data.txt", sendText.Text + "|" + sendText.Sender + "|" + sendUniText.Receiver);
                         client.Write(sendText);
                         receiver.Write(sendText);
                     }
@@ -109,17 +99,21 @@ namespace Server
                     if (IsNameExisting(_packet.Name))
                     {
                         client.Write(new PacketSendNameExists(true));
+                        for (int i = 0; i < clients.Count; i++)
+                        {
+                            names[i] = clients[i].Name;
+                        }
+                        PacketSendCurrentNames sendCurrentNames = new PacketSendCurrentNames(names);
+                        clients.ForEach(y =>
+                        {
+                            y.Write(sendCurrentNames);
+                        });
                     }
                     else
                     {
                         client.Name = _packet.Name;
                         client.Write(new PacketSendNameExists(false));
                     }
-                }
-                else if (packet is PacketReceiveText)
-                {
-                    PacketReceiveText receivedText = (PacketReceiveText)packet;
-                    lastMessages.Remove(receivedText.PacketReceived);
                 }
             }
         }
