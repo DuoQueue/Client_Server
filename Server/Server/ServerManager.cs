@@ -14,24 +14,21 @@ namespace Server
     {
         static ServerManager instance;
         private TcpListener server;
-        private IPAddress address;
-        private IPEndPoint endPoint;
         private Thread waitingForUsers;
         private List<HandleClient> clients;
         private string[] names;
 
         public ServerManager()
         {
-            List<IPAddress> addresses = new List<IPAddress>();
+            /*List<IPAddress> addresses = new List<IPAddress>();
             var host = Dns.GetHostEntry(Dns.GetHostName());
             foreach (var ip in host.AddressList)
             {
                 addresses.Add(ip);
             }
-            address = addresses.Last();
+            address = addresses.Last();*/
             instance = this;
-            endPoint = new IPEndPoint(IPAddress.Loopback, 15567);
-            server = new TcpListener(endPoint);
+            server = new TcpListener(new IPEndPoint(IPAddress.Loopback, 15567));
             clients = new List<HandleClient>();
             waitingForUsers = new Thread(x => {
                 while(true){
@@ -116,6 +113,10 @@ namespace Server
                         client.Name = _packet.Name;
                         client.Write(new PacketSendNameExists(false));
                     }
+                }
+                else if (packet is PacketSendPort)
+                {
+                    client.ChangePort(((PacketSendPort)packet).Port);
                 }
             }
         }

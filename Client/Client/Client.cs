@@ -20,7 +20,6 @@ namespace Client
     {
         public string Name { get; set; }
         public string Password { get; set; }
-        private IPEndPoint myEndPoint;
         private TcpClient mySocket;
         private int port;
         private IPAddress myIp;
@@ -31,11 +30,9 @@ namespace Client
         public Client()
         {
             port = 15567;
-            myEndPoint = new IPEndPoint(IPAddress.Loopback, port-1);
-            mySocket = new TcpClient(myEndPoint);
+            mySocket = new TcpClient();
             reading = new Thread(Read);
             reading.IsBackground = true;
-            
             InitializeComponent();
         }
 
@@ -63,10 +60,10 @@ namespace Client
                         Packet packet = Packet.ToPacket(bytes);
                         if (packet != null)
                         {
-                            if (packet is PacketSendCurrentNames)
+                            if (packet is PacketCurrentNames)
                             {
                                 friendListBox.Items.Clear();
-                                ((PacketSendCurrentNames)packet).clientsName.ForEach(x =>
+                                ((PacketCurrentNames)packet).Names.ForEach(x =>
                                 {
                                     friendListBox.Items.Add(x);
                                 });

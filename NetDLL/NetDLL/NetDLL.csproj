@@ -46,6 +46,7 @@
     <Compile Include="PacketNameRequest.cs" />
     <Compile Include="PacketReceiveText.cs" />
     <Compile Include="PacketSendNameExists.cs" />
+    <Compile Include="PacketSendPort.cs" />
     <Compile Include="PacketSendText.cs" />
     <Compile Include="PacketSendUniText.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
