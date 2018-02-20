@@ -17,6 +17,7 @@ namespace Server
         public StreamWriter Out { get; private set; }
         public string Name { get; set; }
         public Thread Thread { get; private set; }
+        public Guid ID { get; set; }
 
         public HandleClient(TcpClient handle)
         {

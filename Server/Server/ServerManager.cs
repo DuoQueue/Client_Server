@@ -41,6 +41,8 @@ namespace Server
                         HandleClient handle = new HandleClient(client);
                         clients.Add(handle);
                         handle.Write(new PacketConnected());
+                        handle.ID = Guid.NewGuid();
+                        handle.Write(new PacketSendID(handle.ID.ToString()));
                     }
                 }
             });
@@ -103,7 +105,7 @@ namespace Server
                         {
                             names[i] = clients[i].Name;
                         }
-                        PacketSendCurrentNames sendCurrentNames = new PacketSendCurrentNames(names);
+                        PacketCurrentNames sendCurrentNames = new PacketCurrentNames(names);
                         clients.ForEach(y =>
                         {
                             y.Write(sendCurrentNames);
