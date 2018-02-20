@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 namespace NetDLL
 {
     [Serializable]
-    public class SendID : Packet
+    public class PacketSendID : Packet
     {
         public string ID { get; private set; }
 
-        public SendID(string id)
+        public PacketSendID(string id)
         {
             ID = id;
         }

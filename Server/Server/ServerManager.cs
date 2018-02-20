@@ -7,6 +7,8 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using NetDLL;
+using System.IO;
+using System.Reflection;
 
 namespace Server
 {
@@ -18,11 +20,13 @@ namespace Server
         private IPEndPoint endPoint;
         private Thread waitingForUsers;
         private List<HandleClient> clients;
+        private Dictionary<PacketSendText, string> lastMessages;
 
         public ServerManager()
         {
             List<IPAddress> addresses = new List<IPAddress>();
             var host = Dns.GetHostEntry(Dns.GetHostName());
+            File.Create(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\data.txt");
             foreach (var ip in host.AddressList)
             {
                 addresses.Add(ip);
@@ -31,6 +35,7 @@ namespace Server
             instance = this;
             endPoint = new IPEndPoint(address, 15567);
             server = new TcpListener(endPoint);
+            lastMessages = new Dictionary<PacketSendText, string>();
             clients = new List<HandleClient>();
             waitingForUsers = new Thread(x => {
                 while(true){
@@ -38,6 +43,12 @@ namespace Server
                     if (client != null && clients.Count != 10)
                     {
                         clients.Add(new HandleClient(client));
+                        Console.WriteLine(" >> Client verbunden");
+                    }
+                    else if(client != null)
+                    {
+                        client.Close();
+                        Console.WriteLine(" >> Client abgelehnt");
                     }
                 }
             });
@@ -79,6 +90,8 @@ namespace Server
                     if (receiver != null)
                     {
                         PacketSendText sendText = new PacketSendText(client.Name, sendUniText.Text);
+                        lastMessages.Add(sendText, sendUniText.Receiver);
+                        File.WriteAllText(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\data.txt", sendText.Text + "|" + sendText.Sender + "|" + sendUniText.Receiver);
                         client.Write(sendText);
                         receiver.Write(sendText);
                     }
@@ -102,6 +115,11 @@ namespace Server
                         client.Name = _packet.Name;
                         client.Write(new PacketSendNameExists(false));
                     }
+                }
+                else if (packet is PacketReceiveText)
+                {
+                    PacketReceiveText receivedText = (PacketReceiveText)packet;
+                    lastMessages.Remove(receivedText.PacketReceived);
                 }
             }
         }

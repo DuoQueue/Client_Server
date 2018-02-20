@@ -42,11 +42,12 @@
     <Compile Include="Packet.cs" />
     <Compile Include="PacketDisconnect.cs" />
     <Compile Include="PacketNameRequest.cs" />
+    <Compile Include="PacketReceiveText.cs" />
     <Compile Include="PacketSendNameExists.cs" />
     <Compile Include="PacketSendText.cs" />
     <Compile Include="PacketSendUniText.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SendID.cs" />
+    <Compile Include="PacketSendID.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
